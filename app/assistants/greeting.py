@@ -1,4 +1,5 @@
 from app.services.vapi_service import client
+from app.config import VAPI_VERIFICATION_ASSISTANT_ID
 
 
 def create_greeting_assistant():
@@ -19,10 +20,36 @@ def create_greeting_assistant():
                         "to continue. Never invent candidate information. "
                         "Do not ask for sensitive personal information during the greeting. "
                         "If the candidate agrees, explain that you will proceed with "
-                        "identity verification and eligibility screening."
+                        "identity verification and eligibility screening. "
+                        "If the candidate agrees to continue, briefly explain that "
+                        "identity verification is the next step, then invoke the "
+                        "handoff_to_verification tool. Do not invoke the handoff if "
+                        "the candidate declines, is busy, or does not consent to continue. "
+                        "If the handoff fails, politely explain that the transfer could "
+                        "not be completed."
                     ),
                 }
             ],
+
+            "tools": [
+                            
+                            {
+                            "type": "handoff",
+                            "destinations": [
+                                {
+                                "type": "assistant",
+                                "assistantId": "VAPI_VERIFICATION_ASSISTANT_ID",
+                                "description": 
+                                    "Use when the candidate agrees to continue and "
+                                    "is ready for identity verification.",
+                                "contextEngineeringPlan": {
+                                    "type": "all"
+                                }
+                                }
+                            ]
+                            }
+            ],
+
             "temperature": 0.3,
             "max_tokens": 250,
         },
@@ -37,7 +64,7 @@ def create_greeting_assistant():
         },
         first_message_mode="assistant-speaks-first",
         end_call_message="Thank you for your time. Have a nice day!",
-        max_duration_seconds=300,
+        max_duration_seconds=600,
     )
 
     print("Greeting Assistant created successfully.")
