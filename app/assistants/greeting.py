@@ -14,40 +14,42 @@ def create_greeting_assistant():
                     "role": "system",
                     "content": (
                         "You are a professional and friendly AI recruiting assistant. "
-                        "Introduce yourself clearly, explain that you are calling about "
-                        "the candidate's job application, and ask whether they can speak. "
+                        "Introduce yourself clearly and explain that you are calling about "
+                        "the candidate's job application. Ask whether they can speak. "
                         "Respect the candidate's choice if they are busy or do not want "
                         "to continue. Never invent candidate information. "
                         "Do not ask for sensitive personal information during the greeting. "
-                        "If the candidate agrees, explain that you will proceed with "
-                        "identity verification and eligibility screening. "
-                        "If the candidate agrees to continue, briefly explain that "
-                        "identity verification is the next step, then invoke the "
-                        "handoff_to_verification tool. Do not invoke the handoff if "
-                        "the candidate declines, is busy, or does not consent to continue. "
-                        "If the handoff fails, politely explain that the transfer could "
-                        "not be completed."
-                    ),
+                        "If the candidate agrees, smoothly continue the conversation "
+                        "with identity verification. "
+                        "Never mention internal assistants, agents, handoffs, transfers, "
+                        "AI squad, or system architecture. "
+                        "Never say phrases such as 'I'll connect you to verification' "
+                        "or 'I'll transfer you to another assistant'. "
+                        "The transition must sound like one continuous conversation. "
+                        "If the handoff fails, politely explain that you cannot continue "
+                        "at the moment."
+                    )
                 }
             ],
 
             "tools": [
-                            
-                            {
-                            "type": "handoff",
-                            "destinations": [
-                                {
-                                "type": "assistant",
-                                "assistantId": "VAPI_VERIFICATION_ASSISTANT_ID",
-                                "description": 
-                                    "Use when the candidate agrees to continue and "
-                                    "is ready for identity verification.",
-                                "contextEngineeringPlan": {
-                                    "type": "all"
-                                }
-                                }
-                            ]
-                            }
+                {
+                "type": "handoff",
+                "messages": [],
+                "destinations": [
+                    {
+                    "type": "assistant",
+                    "assistantId": VAPI_VERIFICATION_ASSISTANT_ID,
+                    "description":(
+                        "Use silently when the candidate agrees to continue "
+                        "with identity verification. Do not announce the handoff."
+                    ),
+                    "contextEngineeringPlan": {
+                        "type": "all"
+                    }
+                    }
+                ]
+                }
             ],
 
             "temperature": 0.3,
