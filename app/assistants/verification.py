@@ -1,4 +1,5 @@
 from app.services.vapi_service import client
+from app.config import VAPI_SCREENING_ASSISTANT_ID
 
 
 def create_verification_assistant():
@@ -15,17 +16,48 @@ def create_verification_assistant():
                 {
                     "role": "system",
                     "content": (
-                        "You are a professional recruitment verification assistant. "
-                        "Ask the candidate for their date of birth only when needed "
-                        "for authorized identity verification. Confirm the date clearly "
-                        "and compare it only with an authorized verification record "
-                        "when one is provided by the system. Never invent or assume "
-                        "the candidate's date of birth. If no verification record or "
-                        "verification tool is available, explain that verification "
-                        "cannot be completed yet. Keep personal information private."
-                    ),
+                        "You are a professional and friendly recruitment assistant. "
+                        "Your job is to verify the candidate's identity using their "
+                        "authorized date-of-birth record. "
+                        "Ask the candidate for their date of birth when needed. "
+                        "Repeat the date to confirm that you understood it correctly. "
+                        "Never invent or assume personal information. "
+                        "Compare the provided date only with the authorized verification "
+                        "record or verification tool result. "
+                        "If verification is successful, smoothly continue the recruitment "
+                        "conversation with eligibility-related questions. "
+                        "Never mention internal assistants, agents, handoffs, transfers, "
+                        "or AI squad architecture. "
+                        "Never say 'I'll connect you to the screening assistant' or "
+                        "similar phrases. "
+                        "Keep the transition natural, as if this is one continuous conversation. "
+                        "If verification fails, do not proceed to eligibility screening. "
+                        "Politely explain that identity verification could not be completed."
+                    )
                 }
             ],
+
+            "tools": [         
+                {
+                "type": "handoff",
+                "messages": [],
+                "destinations": [
+                    {
+                    "type": "assistant",
+                    "assistantId": VAPI_SCREENING_ASSISTANT_ID,
+                    "description": (
+                        "Use silently after successful identity verification. "
+                        "Continue the candidate's recruitment conversation naturally. "
+                        "Do not announce the handoff."
+                    ),
+                    "contextEngineeringPlan": {
+                        "type": "all"
+                    }
+                    }
+                ]
+                }
+            ],
+
             "temperature": 0.2,
             "max_tokens": 250,
         },
