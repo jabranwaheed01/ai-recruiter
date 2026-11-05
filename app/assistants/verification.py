@@ -251,7 +251,7 @@ def create_verification_assistant():
         voice={
             "provider": "vapi",
             "voice_id": "Elliot",
-        },
+        },#..
         transcriber={
             "provider": "deepgram",
             "model": "nova-2",
