@@ -129,8 +129,9 @@ def evaluate_eligibility(data: dict[str, Any]) -> dict[str, Any]:
     )
 
     experience_cap = data.get("experience_cap")
-    cap_result = None
-    if experience is not None and experience_cap is not None:
+    cap_result = True
+
+    if experience_cap is not None:
         if (
             isinstance(experience, (int, float))
             and not isinstance(experience, bool)
@@ -139,12 +140,17 @@ def evaluate_eligibility(data: dict[str, Any]) -> dict[str, Any]:
             and experience_cap >= 0
         ):
             cap_result = experience <= experience_cap
+        else:
+            cap_result = None
 
     check(
         "Within role's maximum experience cap (if applicable)",
         cap_result,
-        "Supply a maximum only when objectively required for the role",
+        "No maximum experience limit applies to this role"
+        if experience_cap is None
+        else "Check the role-specific maximum experience requirement",
     )
+    
 
     check(
         "Accepts required working hours",
